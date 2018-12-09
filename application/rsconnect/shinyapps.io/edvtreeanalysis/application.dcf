@@ -1,0 +1,10 @@
+name: application
+title:
+username:
+account: edvtreeanalysis
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 609675
+bundleId: 1749980
+url: https://edvtreeanalysis.shinyapps.io/application/
+when: 1544302375.55439
