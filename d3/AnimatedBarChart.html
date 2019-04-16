@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>EDAV-HW04-Q02</title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>  <!-- link to D3 library -->
+
+		<style type="text/css">
+			.special {
+				fill:silver;        
+				stroke: white;
+				stroke-width: 2;
+				}   
+			.special2 {
+				fill:powderblue;        
+				stroke:blue;
+				stroke-width: 2;
+				}   
+		  </style>
+         
+         
+		
+	</head>
+	
+	<body>
+		<svg width="660" height="600">  
+            <rect x="50" y="50" width="560" height="50" class="special"></rect>
+            <rect x="50" y="100" width="560" height="50" class="special"></rect>
+            <rect x="50" y="150" width="560" height="50" class="special"></rect>
+            <rect x="50" y="200" width="560" height="50" class="special"></rect>
+            <rect x="50" y="250" width="560" height="50" class="special"></rect>
+            <text x="40" y="105">8</text>
+            <text x="40" y="155">6</text>
+            <text x="40" y="205">4</text>
+            <text x="40" y="255">2</text>
+            <text x="40" y="305">0</text>
+            <rect x="80" y="250" width="100" height="50" class="special2" id="bar1"></rect>
+            <rect x="180" y="250" width="100" height="50" class="special2"></rect>
+            <rect x="280" y="175" width="100" height="125" class="special2"></rect>
+            <rect x="380" y="75" width="100" height="225" class="special2" id="bar4"></rect>
+            <rect x="480" y="250" width="100" height="50" class="special2"></rect>
+            <text x="75" y="320">7</text>
+            <text x="175" y="320">8</text>
+            <text x="275" y="320">9</text>
+            <text x="375" y="320">10</text>
+            <text x="475" y="320">11</text>
+            <text x="575" y="320">12</text>
+            <text x="280" y="25" font-size="20px">Histogram</text>
+            <text x="20" y="225" font-size="20px" transform="rotate(270,20,225)">Frequency</text>
+        </svg>
+        
+		<script>
+		    // JavaScript / D3 will go here
+			d3.selectAll("text").style("fill","blue");
+            d3.selectAll("rect.special2").style("fill","lightgreen");
+            d3.select("#bar1").transition().duration(2000).attr("y","150").attr("height","150");
+            d3.select("#bar4").transition().duration(2000).attr("y","200").attr("height","100");
+            function goorange() {d3.select(this).style("fill", "orange")};
+            d3.selectAll("rect.special2").on("mouseover", goorange);
+            function golightgreen() {d3.select(this).style("fill", "lightgreen")};
+            d3.selectAll("rect.special2").on("mouseout", golightgreen);
+			
+		</script>
+	</body>
+	
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Animated Correlation</title>
+       
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+
+	</head>
+	<body>
+
+	<div style="width: 600px">
+	
+	  <h3>Correlation Coefficient</h3>
+	
+    
+	  
+	  <p>The correlation coefficient (r) is a measure of the linear relationship
+	  between two variables x and y. To get a sense of the connection between the
+	  appearance of points -- (x,y) pairs --  in a scatterplot and the value of r,
+	  click anywhere on the graph to add points. To remove points, click the Remove 
+	  Points button and then mouseover points. The correlation coefficient is shown below.</p>
+	  
+	</div>
+	
+<!-- 	   Radio buttons (NEW) -->
+        <input type="radio" name="filter" value="add" checked="checked"> Add points
+        <input type="radio" name="filter" value="remove"> Remove points
+		
+		<h3 id="cc">Two points are needed to calculate r.</h3>
+	  
+		<script type="text/javascript">
+
+			//  Width and height of svg
+			var w = 600;
+			var h = 400;
+			var padding = 30;
+			
+			// axis min / max
+		    var xmin = -50;
+		    var xmax = 50;
+		    var ymin = -30;
+		    var ymax = 30;
+		
+			//		Scale functions
+			var xScale = d3.scaleLinear().domain([xmin,xmax]).range([padding,w-padding]);
+			var yScale = d3.scaleLinear().domain([ymin,ymax]).range([h-padding,padding]);
+			
+			//    Define X axis and Y axis
+			var xAxis = d3.axisBottom().scale(xScale).ticks(5);
+			var yAxis = d3.axisLeft().scale(yScale).ticks(7);
+
+
+			//    Create SVG element	
+			d3.select("body").append("svg").attr("class","main").attr("width",w).attr("height",h);	
+			var svg = d3.select("svg.main");
+			    				
+			
+			//    Create axes
+			svg.append("g").attr("class", "xAxis").attr("transform",`translate(0,${h/2})`).call(xAxis);
+			svg.append("g").attr("class", "yAxis").attr("transform",`translate(${w/2},0)`).call(yAxis);
+
+
+			//    Update stats function
+			var xd = [];
+			var yd = [];
+			
+			function update(xd,yd){
+				var x_data = [];
+				var y_data = [];
+				//invert the coordinate data to scale value
+				for (var i=0;i<xd.length;i++){
+					var x_scale = xScale.invert(xd[i]); // x-coord
+					var y_scale = yScale.invert(yd[i]); // y-coord
+					x_data.push(x_scale);
+				    y_data.push(y_scale);
+				}
+				//Calculate x,y axies mean value
+				var x_mean = d3.mean(x_data);
+				var y_mean = d3.mean(y_data);
+				//Calculate r
+				var xy = 0;
+				var x_var = 0;
+				var y_var = 0;
+				for (var i=0; i<x_data.length; i++){
+					xy = xy + (x_data[i]-x_mean)*(y_data[i]-y_mean);
+					x_var = x_var + Math.pow((x_data[i]-x_mean),2);
+					y_var = y_var + Math.pow((y_data[i]-y_mean),2);	
+				}  
+				var r = xy/Math.sqrt(x_var)/Math.sqrt(y_var);
+				r = Math.round(r*100)/100;
+				//Show r value when at least two points
+				if (x_data.length>1){
+					d3.select("#cc").text(`r = ${r}`);
+				}else{
+					d3.select("#cc").text(`Two points are needed to calculate r.`);
+				}	
+			}
+
+			//    Radio button behavior
+
+			var decision = 0;
+			d3.selectAll("input").on("change",function(){
+				var view = d3.select(this).node().value;
+				if (view == "add"){
+					decision = 0; // "Add points" button		
+				}else{
+					decision = 1; // "Remove points" button
+				}
+			});
+
+			//    Click behavior
+			// if "Add points" button, click anywhere on the graph to add points.
+			svg.on("click", function(){
+				if (decision == 0){
+					// get points coord
+					var coord = d3.mouse(this);
+				    var x = coord[0];
+					var y = coord[1];
+					// add coord to the list; use to update r later
+				    xd.push(x);
+				    yd.push(y);
+				    //Add point at click location
+				    svg.append("circle").attr("id","pt").attr("cx", x).attr("cy",y).attr("r",5).attr("fill","red");
+				    update(xd,yd);
+				}
+			});
+			// if "Remove points" button,  mouseover to remove points. 
+			svg.on("mouseover", function(){
+				if (decision == 1 ){	
+				   svg.selectAll("#pt").on("mouseover", function(){
+						// get points coord
+					    var coord = d3.mouse(this);
+			            var x = coord[0];
+			            var y = coord[1];
+                        // delete coord to the list; use to update r later
+			            xd.splice(xd.indexOf(x),1);
+						yd.splice(yd.indexOf(y),1);
+						// remove points
+			            var s = d3.select(this);
+				        s.remove();	
+				        update(xd,yd);
+					});
+				}
+			});
+
+		</script>
+
+        
+        
+	</body>
+</html>
